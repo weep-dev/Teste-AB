@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Teste A/B de Botões</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+      background: #f4f4f4;
+    }
+
+    button {
+      font-size: 20px;
+      margin: 20px;
+      padding: 15px 40px;
+      cursor: pointer;
+    }
+
+    .btnA {
+      background-color: #2196F3;
+      color: white;
+    }
+
+    .btnB {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .btnC {
+      background-color: #af4c4c;
+      color: white;
+    }
+
+    #resultados {
+      display: none;
+      margin-top: 40px;
+    }
+
+    canvas {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Experimento A/B de Botões</h1>
+
+  <button onclick="registrarClique('A')" class="btnA">Versão A</button>
+  <button onclick="registrarClique('B')" class="btnB">Versão B</button>
+  <button onclick="registrarClique('C')" class="btnC">Versão C</button>
+
+  <div id="resultados">
+    <h2>Total de Cliques</h2>
+    <p>Versão A: <span id="cliquesA">0</span></p>
+    <p>Versão B: <span id="cliquesB">0</span></p>
+    <p>Versão C: <span id="cliquesC">0</span></p>
+    <canvas id="grafico" width="400" height="200"></canvas>
+  </div>
+
+  <script>
+    let cliques = { A: 0, B: 0, C: 0 };
+    let graficoExibido = false;
+
+    function registrarClique(versao) {
+      cliques[versao]++;
+    }
+
+    function mostrarResultados() {
+      if (graficoExibido) return;
+
+      document.getElementById('cliquesA').textContent = cliques.A;
+      document.getElementById('cliquesB').textContent = cliques.B;
+      document.getElementById('cliquesB').textContent = cliques.C;
+      document.getElementById('resultados').style.display = 'block';
+
+      const ctx = document.getElementById('grafico').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Versão A', 'Versão B', 'Versão C'],
+          datasets: [{
+            label: 'Total de Cliques',
+            data: [cliques.A, cliques.B, cliques.C],
+            backgroundColor: ['#2196F3', '#4CAF50', '#AF4C4C']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            title: {
+              display: true,
+              text: 'Resultados do Teste A/B'
+            }
+          }
+        }
+      });
+
+      graficoExibido = true;
+    }
+
+    // Atalho de teclado: Ctrl + Shift + R
+    document.addEventListener('keydown', function (e) {
+      if (e.ctrlKey && e.shiftKey && e.key === 'Z') {
+        mostrarResultados();
+      }
+    });
+  </script>
+</body>
+</html>
